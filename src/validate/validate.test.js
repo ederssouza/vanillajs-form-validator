@@ -33,34 +33,6 @@ describe('FormValidate', () => {
     test('Must Have a Form Property', () => {
       expect(validate).to.have.property('form')
     })
-
-    // test('should be a method addSuccess', () => {
-    //   expect(validate).to.respondTo('addSuccess')
-    // })
-
-    // test('should be a method cpfIsValid', () => {
-    //   expect(validate).to.respondTo('cpfIsValid')
-    // })
-
-    // test('should be a method validation', () => {
-    //   expect(validate).to.respondTo('validation')
-    // })
-
-    // test('should be a method checkValidFields', () => {
-    //   expect(validate).to.respondTo('checkValidFields')
-    // })
-
-    // test('should be a method getValues', () => {
-    //   expect(validate).to.respondTo('getValues')
-    // })
-
-    // test('should be a method reset', () => {
-    //   expect(validate).to.respondTo('reset')
-    // })
-
-    // test('should be a method submit', () => {
-    //   expect(validate).to.respondTo('submit')
-    // })
   })
 
   describe('addError method', () => {
@@ -365,11 +337,37 @@ describe('FormValidate', () => {
     test('should be a method checkValidFields', () => {
       expect(validate).to.respondTo('checkValidFields')
     })
-  })
 
-  describe('getValues method', () => {
-    test('should be a method getValues', () => {
-      expect(validate).to.respondTo('getValues')
+    test('validate.checkValidFields() should be return false', () => {
+      form.innerHTML = `
+        <div class="form-group">
+          <input type="text" data-required="true" class="valid">
+        </div>
+
+        <div class="form-group">
+          <input type="text" data-required="true">
+        </div>
+      `
+
+      const before = validate.checkValidFields()
+      const after = false
+      expect(before).to.be.equal(after)
+    })
+
+    test('validate.checkValidFields() should be return true', () => {
+      form.innerHTML = `
+        <div class="form-group">
+          <input type="text" data-required="true" class="valid">
+        </div>
+
+        <div class="form-group">
+          <input type="text" data-required="true" class="valid">
+        </div>
+      `
+
+      const before = validate.checkValidFields()
+      const after = true
+      expect(before).to.be.equal(after)
     })
   })
 
@@ -377,11 +375,86 @@ describe('FormValidate', () => {
     test('should be a method reset', () => {
       expect(validate).to.respondTo('reset')
     })
+
+    test('should be a method reset form', () => {
+      elem.classList.add('valid')
+      elem.value = 'Fulano da Silva'
+
+      validate.reset()
+
+      const before = elem.classList.contains('valid')
+      const after = false
+      expect(before).to.be.equal(after)
+    })
   })
 
   describe('submit method', () => {
     test('should be a method submit', () => {
       expect(validate).to.respondTo('submit')
+    })
+
+    test('should be return true', () => {
+      form.innerHTML = `
+        <div class="form-group">
+          <input type="text" data-required="true" class="valid">
+        </div>
+
+        <div class="form-group">
+          <input type="text" data-required="true" class="valid">
+        </div>
+      `
+
+      const before = validate.submit()
+      const after = true
+      expect(before).to.be.equal(after)
+    })
+
+    test('should be return false', () => {
+      form.innerHTML = `
+        <div class="form-group">
+          <input type="text" data-required="true" class="valid">
+        </div>
+
+        <div class="form-group">
+          <input type="text" data-required="true">
+        </div>
+      `
+
+      const before = validate.submit()
+      const after = false
+      expect(before).to.be.equal(after)
+    })
+  })
+
+  describe('getValues method', () => {
+    test('should be a method getValues', () => {
+      expect(validate).to.respondTo('getValues')
+    })
+
+    test('should be return object { name: "Fulano da Silva", terms: "true" }', () => {
+      form.innerHTML = `
+        <div class="form-group">
+          <input type="text" name="name" data-required="true" class="valid" value="Fulano da Silva">
+        </div>
+
+        <div class="form-group">
+          <div class="checkbox" data-required data-validate-msg="Selecione uma opção">
+            <label>
+              <input type="checkbox" name="terms" value="true" checked> I accept terms.
+            </label>
+          </div>
+        </div>
+      `
+
+      const before = validate.getValues()
+      const after = { name: 'Fulano da Silva', terms: 'true' }
+      expect(before).to.be.deep.equal(after)
+    })
+  })
+
+  describe('init method', () => {
+    test('should be a method init', () => {
+      expect(validate).to.respondTo('init')
     })
   })
 })

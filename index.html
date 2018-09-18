@@ -5,16 +5,162 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>VanillaJS Form Validation</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <style>
+      .form-control.valid {
+        border-color: green;
+      }
+      .form-control.invalid {
+        border-color: red;
+      }
+      .form-group {
+        position: relative;
+      }
+      .input-msg {
+        color: red;
+        font-size: 10px;
+        font-weight: normal;
+        position: absolute;
+        top: 100%;
+      }
+    </style>
   </head>
 
   <body>
-    <form id="form"></form>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+          <form id="form-user" novalidate>
+            <div class="form-group">
+              <label for="input-name">Name</label>
+              <input
+                type="text"
+                id="input-name"
+                class="form-control"
+                name="name"
+                data-required
+                data-validate-msg="Campo obrigatório">
+            </div>
+
+            <div class="form-group">
+              <label for="input-email">E-mail</label>
+              <input
+                type="email"
+                class="form-control"
+                id="input-email"
+                name="email"
+                data-required
+                data-validate-rule="email"
+                data-validate-msg="Insira um e-mail válido">
+            </div>
+
+            <div class="form-group">
+              <label for="input-phone">Phone</label>
+              <input
+                type="tel"
+                class="form-control"
+                id="input-phone"
+                name="phone"
+                data-required
+                data-validate-rule="phone"
+                data-validate-msg="Insira um telefone válido">
+            </div>
+
+            <div class="form-group">
+              <label for="input-cpf">CPF</label>
+              <input
+                type="text"
+                class="form-control"
+                id="input-cpf"
+                name="cpf"
+                data-required
+                data-validate-rule="cpf"
+                data-validate-msg="Insira um CPF válido">
+            </div>
+
+            <div class="form-group">
+              <label for="input-rg">RG</label>
+              <input
+                type="text"
+                class="form-control"
+                id="input-rg"
+                name="rg"
+                data-required
+                data-validate-rule="rg"
+                data-validate-msg="Insira um RG válido">
+            </div>
+
+            <div class="form-group">
+              <label for="input-cep">CEP</label>
+              <input
+                type="text"
+                class="form-control"
+                id="input-cep"
+                name="cep"
+                data-required
+                data-validate-rule="cep"
+                data-validate-msg="Insira um CEP válido">
+            </div>
+
+            <div class="form-group">
+              <label for="input-rg">Sex</label>
+              <div data-required data-validate-msg="Selecione uma opção">
+                <label class="radio-inline">
+                  <input type="radio" name="sex" value="female"> Female
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="sex" value="male"> Male
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="checkbox" data-required data-validate-msg="Selecione uma opção">
+                <label>
+                  <input type="checkbox" name="terms" value="true"> I accept terms.
+                </label>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Submit</button>
+          </form>
+        </div>
+      </div><!-- /.row -->
+    </div><!-- /.container -->
 
     <script src="dist/js/vanillajs-form-validation.js"></script>
     <script>
-      const form = document.getElementById('form')
-      const validate = new FormValidate(form)
-      validate.init()
+      var form = document.getElementById('form-user')
+      var formValidate = new FormValidate(form)
+      formValidate.init()
+
+      form.addEventListener('submit', () => {
+        // check valid form
+        var isValid = formValidate.checkValidFields()
+
+        if (isValid) {
+          // get input values
+          console.table(formValidate.getValues())
+
+          // reset form
+          formValidate.reset()
+        }
+      })
+
+      // mock
+      function mock () {
+        document.querySelector('[name=name]').value = 'Fulano da Silva'
+        document.querySelector('[name=email]').value = 'fulan@gmail.com'
+        document.querySelector('[name=phone]').value = '(11) 98658-3449'
+        document.querySelector('[name=cpf]').value = '351.060.578-09'
+        document.querySelector('[name=rg]').value = '44.228.093-2'
+        document.querySelector('[name=cep]').value = '06172-120'
+        document.querySelector('[value="male"]').checked = true
+        document.querySelector('[name="terms"]').checked = true
+        formValidate.trigger()
+      }
+
+      mock()
     </script>
   </body>
 </html>
