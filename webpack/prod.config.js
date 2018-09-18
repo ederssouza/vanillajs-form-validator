@@ -3,6 +3,7 @@
 const path = require('path')
 const common = require('./common')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 const pathsToClean = ['dist']
 const cleanOptions = {
@@ -20,6 +21,12 @@ module.exports = {
   module: {
     rules: [
       common.jsLoader
+    ]
+  },
+
+  optimization: {
+    minimizer: [
+      new UglifyJsPlugin()
     ]
   },
 
