@@ -1,6 +1,6 @@
-# VanillaJS Form Validation
+# VanillaJS Form Validator
 
-[![Build Status](https://travis-ci.org/ederssouza/vanillajs-form-validation.svg?branch=master)](https://travis-ci.org/ederssouza/vanillajs-form-validation)
+[![Build Status](https://travis-ci.org/ederssouza/vanillajs-form-validator.svg?branch=master)](https://travis-ci.org/ederssouza/vanillajs-form-validator)
 
 Form validation in pure JavaScript.
 
@@ -8,7 +8,7 @@ Form validation in pure JavaScript.
 
 ```bash
 # to do, publish npm package
-$ npm install vanillajs-form-validation --save
+$ npm install vanillajs-form-validator --save
 ```
 
 ## How to use
@@ -17,7 +17,7 @@ $ npm install vanillajs-form-validation --save
 
 ### Basic template
 
-[Click here](https://ederssouza.github.io/vanillajs-form-validation/) to view demo.
+[Click here](https://ederssouza.github.io/vanillajs-form-validator/) to view demo.
 
 ## Contributing
 
@@ -25,11 +25,11 @@ Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c6
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/ederssouza/vanillajs-form-validation/tags).
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/ederssouza/vanillajs-form-validator/tags).
 
 ## Authors
 
-See also the list of [contributors](https://github.com/ederssouza/vanillajs-form-validation/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/ederssouza/vanillajs-form-validator/contributors) who participated in this project.
 
 ## License
 
