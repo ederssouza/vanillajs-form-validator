@@ -1,11 +1,13 @@
 # VanillaJS Form Validation
 
+[![Build Status](https://travis-ci.org/ederssouza/vanillajs-form-validation.svg?branch=master)](https://travis-ci.org/ederssouza/vanillajs-form-validation)
+
 Form validation in pure JavaScript.
 
 ## Installation
 
 ```bash
-# to do
+# to do, publish npm package
 $ npm install vanillajs-form-validation --save
 ```
 
