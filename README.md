@@ -17,7 +17,7 @@ $ npm install vanillajs-form-validation --save
 
 ### Basic template
 
-[Click here](index.html) to view demo.
+[Click here](https://ederssouza.github.io/vanillajs-form-validation/) to view demo.
 
 ## Contributing
 
