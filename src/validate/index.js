@@ -1,14 +1,22 @@
 'use strict'
 
+function isElement (element) {
+  return element instanceof window.Element
+}
+
 class FormValidate {
-  constructor (
+  constructor ({
     formSelector,
     formGroupSelector = '.form-group',
     validClass = 'valid',
     invalidClass = 'invalid',
     msgClass = 'input-msg'
-  ) {
-    // props
+  }) {
+    if (!isElement(formSelector)) {
+      throw new TypeError('formSelector should a valid selector')
+    }
+
+    // selectors
     this.form = formSelector
     this.formGroupSelector = formGroupSelector
 
@@ -28,6 +36,7 @@ class FormValidate {
     this.addError = this.addError.bind(this)
     this.addSuccess = this.addSuccess.bind(this)
     this.validation = this.validation.bind(this)
+    this.trigger = this.trigger.bind(this)
     this.checkValidFields = this.checkValidFields.bind(this)
     this.reset = this.reset.bind(this)
     this.submit = this.submit.bind(this)
@@ -108,60 +117,60 @@ class FormValidate {
     }
   }
 
-  validation (event) {
-    let target = event.target || event
+  validation (e) {
+    let target = e.target || e
 
     if (target.getAttribute('data-validate-rule') === 'email') {
       if (!this.regexEmail.test(target.value)) {
         this.addError(target)
-        this.checkValidFields(event)
+        this.checkValidFields(e)
         return false
       } else {
         this.addSuccess(target)
-        this.checkValidFields(event)
+        this.checkValidFields(e)
         return true
       }
     } else if (target.getAttribute('data-validate-rule') === 'phone') {
       if (!this.regexPhone.test(target.value)) {
         this.addError(target)
-        this.checkValidFields(event)
+        this.checkValidFields(e)
         return false
       } else {
         this.addSuccess(target)
-        this.checkValidFields(event)
+        this.checkValidFields(e)
         return true
       }
     } else if (target.getAttribute('data-validate-rule') === 'cpf') {
       target.setAttribute('maxlength', 14)
       if (!this.regexCPF.test(target.value) || !this.cpfIsValid(target.value)) {
         this.addError(target)
-        this.checkValidFields(event)
+        this.checkValidFields(e)
         return false
       } else {
         this.addSuccess(target)
-        this.checkValidFields(event)
+        this.checkValidFields(e)
         return true
       }
     } else if (target.getAttribute('data-validate-rule') === 'rg') {
       target.setAttribute('maxlength', 12)
       if (!this.regexRG.test(target.value)) {
         this.addError(target)
-        this.checkValidFields(event)
+        this.checkValidFields(e)
         return false
       } else {
         this.addSuccess(target)
-        this.checkValidFields(event)
+        this.checkValidFields(e)
         return true
       }
     } else if (target.getAttribute('data-validate-rule') === 'cep') {
       target.setAttribute('maxlength', 9)
       if (!this.regexCEP.test(target.value)) {
         this.addError(target)
-        this.checkValidFields(event)
+        this.checkValidFields(e)
         return false
       } else {
         this.addSuccess(target)
-        this.checkValidFields(event)
+        this.checkValidFields(e)
         return true
       }
     } else if (target.type === 'radio' || target.type === 'checkbox') {
@@ -169,33 +178,36 @@ class FormValidate {
       target = parent.querySelector('[type=radio]:checked') || parent.querySelector('[type=checkbox]:checked')
       if (!target) {
         this.addError(parent)
-        this.checkValidFields(event)
+        this.checkValidFields(e)
         return false
       } else {
         this.addSuccess(parent)
-        this.checkValidFields(event)
+        this.checkValidFields(e)
         return true
       }
     } else {
       if (target.value.length === 0) {
         this.addError(target)
-        this.checkValidFields(event)
+        this.checkValidFields(e)
         return false
       } else {
         this.addSuccess(target)
-        this.checkValidFields(event)
+        this.checkValidFields(e)
         return true
       }
     }
   }
 
   trigger () {
+    let i
     const fields = this.form.querySelectorAll('input')
-    const ev = new window.Event('change', { bubbles: true })
+    const event = new window.Event('change', { bubbles: true })
 
-    for (let i = 0; i < fields.length; i++) {
-      fields[i].dispatchEvent(ev)
+    for (i = 0; i < fields.length; i++) {
+      fields[i].dispatchEvent(event)
     }
+
+    return true
   }
 
   checkValidFields () {
@@ -261,11 +273,10 @@ class FormValidate {
         const elem = parent.querySelector('[type=radio]:checked') || parent.querySelector('[type=checkbox]:checked')
 
         if (elem) {
-          obj[elem.name] = elem.value
+          obj[elem.name] = elem.value === 'true' ? !!elem.value : elem.value
+        } else {
+          obj[element.name] = null
         }
-        // } else {
-        //   obj[element.name] = null
-        // }
       }
     }
 
@@ -273,7 +284,6 @@ class FormValidate {
   }
 
   init () {
-    // validation inputs and textarea
     let i
     let input
     const inputs = this.form.querySelectorAll('[data-required]')
@@ -304,13 +314,12 @@ class FormValidate {
     }
 
     // submit form
-    this.form.addEventListener('submit', (event) => {
-      event.preventDefault()
-
-      if (this.submit()) {
-        return this.getValues()
-      }
+    this.form.addEventListener('submit', (e) => {
+      e.preventDefault()
+      this.submit()
     })
+
+    return true
   }
 }
 
