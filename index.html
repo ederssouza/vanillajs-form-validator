@@ -38,6 +38,7 @@
                 id="input-name"
                 class="form-control"
                 name="name"
+                autocomplete="off"
                 data-required
                 data-validate-msg="Campo obrigatório">
             </div>
@@ -49,6 +50,7 @@
                 class="form-control"
                 id="input-email"
                 name="email"
+                autocomplete="off"
                 data-required
                 data-validate-rule="email"
                 data-validate-msg="Insira um e-mail válido">
@@ -61,6 +63,7 @@
                 class="form-control"
                 id="input-phone"
                 name="phone"
+                autocomplete="off"
                 data-required
                 data-validate-rule="phone"
                 data-validate-msg="Insira um telefone válido">
@@ -73,6 +76,7 @@
                 class="form-control"
                 id="input-cpf"
                 name="cpf"
+                autocomplete="off"
                 data-required
                 data-validate-rule="cpf"
                 data-validate-msg="Insira um CPF válido">
@@ -85,6 +89,7 @@
                 class="form-control"
                 id="input-rg"
                 name="rg"
+                autocomplete="off"
                 data-required
                 data-validate-rule="rg"
                 data-validate-msg="Insira um RG válido">
@@ -97,6 +102,7 @@
                 class="form-control"
                 id="input-cep"
                 name="cep"
+                autocomplete="off"
                 data-required
                 data-validate-rule="cep"
                 data-validate-msg="Insira um CEP válido">
@@ -131,7 +137,11 @@
     <script src="dist/js/vanillajs-form-validation.js"></script>
     <script>
       var form = document.getElementById('form-user')
-      var formValidate = new FormValidate(form)
+      var config = {
+        formSelector: form
+      }
+
+      var formValidate = new FormValidate(config)
       formValidate.init()
 
       form.addEventListener('submit', () => {
@@ -149,18 +159,20 @@
 
       // mock
       function mock () {
-        document.querySelector('[name=name]').value = 'Fulano da Silva'
-        document.querySelector('[name=email]').value = 'fulan@gmail.com'
-        document.querySelector('[name=phone]').value = '(11) 98658-3449'
-        document.querySelector('[name=cpf]').value = '351.060.578-09'
-        document.querySelector('[name=rg]').value = '44.228.093-2'
-        document.querySelector('[name=cep]').value = '06172-120'
-        document.querySelector('[value="male"]').checked = true
-        document.querySelector('[name="terms"]').checked = true
-        formValidate.trigger()
+        window.setTimeout(() => {
+          document.querySelector('[name=name]').value = 'Fulano da Silva'
+          document.querySelector('[name=email]').value = 'fulan@gmail.com'
+          document.querySelector('[name=phone]').value = '(11) 98658-3449'
+          document.querySelector('[name=cpf]').value = '351.060.578-09'
+          document.querySelector('[name=rg]').value = '44.228.093-2'
+          document.querySelector('[name=cep]').value = '06172-120'
+          document.querySelector('[value="male"]').checked = true
+          document.querySelector('[name="terms"]').checked = true
+          formValidate.trigger()
+        }, 2000)
       }
 
-      mock()
+      // mock()
     </script>
   </body>
 </html>

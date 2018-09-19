@@ -30,7 +30,7 @@ module.exports = {
     ]
   },
 
-  plugins: common.plugins.concat(
+  plugins: [
     new CleanWebpackPlugin(pathsToClean, cleanOptions)
-  )
+  ].concat(common.plugins)
 }
