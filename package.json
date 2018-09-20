@@ -1,6 +1,6 @@
 {
   "name": "vanillajs-form-validator",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Form validation in pure JavaScript.",
   "main": "./src/index.js",
   "scripts": {
@@ -51,9 +51,6 @@
     "webpack": "^4.19.0",
     "webpack-cli": "^3.1.0",
     "webpack-dev-server": "^3.1.8"
-  },
-  "dependencies": {
-    "@polvo-labs/card-type": "0.0.2"
   },
   "babel": {
     "presets": [
