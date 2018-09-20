@@ -31,6 +31,7 @@ class FormValidate {
     this.regexCPF = /^(\d{3})(\.)?(\d{3})(\.)?(\d{3})(-)?(\d{2})$/
     this.regexRG = /^(\d{2})(\.)?(\d{3})(\.)?(\d{3})(-)?(\d{1})$/
     this.regexCEP = /^(\d{5})(-)?(\d{3})$/
+    this.regexUrl = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/
     this.regexInitialWhiteSpace = /^(\s+)/
     this.regexLastWhiteSpace = /(\s+)$/
 
@@ -121,6 +122,8 @@ class FormValidate {
 
   validation (e) {
     let target = e.target || e
+    const getRegex = target.getAttribute('data-validate-regex')
+    const regex = getRegex ? new RegExp(getRegex) : false
 
     if (target.getAttribute('data-validate-rule') === 'email') {
       if (!this.regexEmail.test(target.value)) {
@@ -175,6 +178,16 @@ class FormValidate {
         this.checkValidFields(e)
         return true
       }
+    } else if (target.getAttribute('data-validate-rule') === 'url') {
+      if (!this.regexUrl.test(target.value)) {
+        this.addError(target)
+        this.checkValidFields(e)
+        return false
+      } else {
+        this.addSuccess(target)
+        this.checkValidFields(e)
+        return true
+      }
     } else if (target.type === 'radio' || target.type === 'checkbox') {
       const parent = target.parentNode.parentNode
       target = parent.querySelector('[type=radio]:checked') || parent.querySelector('[type=checkbox]:checked')
@@ -184,6 +197,16 @@ class FormValidate {
         return false
       } else {
         this.addSuccess(parent)
+        this.checkValidFields(e)
+        return true
+      }
+    } else if (regex) {
+      if (!regex.test(target.value)) {
+        this.addError(target)
+        this.checkValidFields(e)
+        return false
+      } else {
+        this.addSuccess(target)
         this.checkValidFields(e)
         return true
       }
