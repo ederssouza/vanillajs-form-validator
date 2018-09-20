@@ -86,7 +86,6 @@ Add `data-required` attribute on `<input />` tag:
 
 #### Regex attribute
 
-data-validate-regex="\d+"
 Add `data-validate-regex` attribute on `<input />` tag:
 
 ```html
