@@ -31,6 +31,8 @@ class FormValidate {
     this.regexCPF = /^(\d{3})(\.)?(\d{3})(\.)?(\d{3})(-)?(\d{2})$/
     this.regexRG = /^(\d{2})(\.)?(\d{3})(\.)?(\d{3})(-)?(\d{1})$/
     this.regexCEP = /^(\d{5})(-)?(\d{3})$/
+    this.regexInitialWhiteSpace = /^(\s+)/
+    this.regexLastWhiteSpace = /(\s+)$/
 
     // methods
     this.addError = this.addError.bind(this)
@@ -186,7 +188,11 @@ class FormValidate {
         return true
       }
     } else {
-      if (target.value.length === 0) {
+      if (
+        target.value.length === 0 ||
+        this.regexInitialWhiteSpace.test(target.value) ||
+        this.regexLastWhiteSpace.test(target.value)
+      ) {
         this.addError(target)
         this.checkValidFields(e)
         return false
