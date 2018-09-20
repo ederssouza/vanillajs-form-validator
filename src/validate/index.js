@@ -7,7 +7,7 @@ function isElement (element) {
 class FormValidate {
   constructor ({
     formSelector,
-    formGroupSelector = '.form-group',
+    inputGroupClass = 'form-group',
     validClass = 'valid',
     invalidClass = 'invalid',
     msgClass = 'input-msg'
@@ -18,7 +18,7 @@ class FormValidate {
 
     // selectors
     this.form = formSelector
-    this.formGroupSelector = formGroupSelector
+    this.inputGroupClass = inputGroupClass
 
     // css classes
     this.validClass = validClass
@@ -54,7 +54,7 @@ class FormValidate {
     msg.classList.add(this.msgClass)
     msg.innerHTML = elem.getAttribute('data-validate-msg') || 'Required field'
 
-    const parent = elem.closest(this.formGroupSelector)
+    const parent = elem.closest(`.${this.inputGroupClass}`)
     const msgCheck = parent.querySelector(`.${this.msgClass}`)
 
     if (!msgCheck) {
@@ -275,7 +275,7 @@ class FormValidate {
       }
 
       if (element.type === 'radio' || element.type === 'checkbox') {
-        const parent = element.closest(this.formGroupSelector)
+        const parent = element.closest(`.${this.inputGroupClass}`)
         const elem = parent.querySelector('[type=radio]:checked') || parent.querySelector('[type=checkbox]:checked')
 
         if (elem) {
