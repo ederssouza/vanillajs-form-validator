@@ -256,6 +256,64 @@ describe('FormValidate', () => {
       expect(before).to.be.true
     })
 
+    test('should return invalid url', () => {
+      elem.setAttribute('data-validate-rule', 'url')
+      elem.value = 'uol.com.br'
+
+      const before = validate.validation(elem)
+      expect(before).to.be.false
+    })
+
+    test('should return valid url', () => {
+      elem.setAttribute('data-validate-rule', 'url')
+      elem.value = 'http://uol.com.br'
+
+      const before = validate.validation(elem)
+      expect(before).to.be.true
+    })
+
+    test('should return valid url', () => {
+      elem.setAttribute('data-validate-rule', 'url')
+      elem.value = 'http://www.uol.com.br'
+
+      const before = validate.validation(elem)
+      expect(before).to.be.true
+    })
+
+    test('should return valid url', () => {
+      elem.setAttribute('data-validate-rule', 'url')
+      elem.value = 'https://www.uol.com.br'
+
+      const before = validate.validation(elem)
+      expect(before).to.be.true
+    })
+
+    test('should return valid url', () => {
+      elem.setAttribute('data-validate-rule', 'url')
+      elem.value = 'ftp://www.uol.com.br'
+
+      const before = validate.validation(elem)
+      expect(before).to.be.true
+    })
+
+    test('should return invalid regex', () => {
+      /* eslint-disable-next-line */
+      elem.setAttribute('data-validate-regex', '\d+')
+      elem.value = 'abcd'
+
+      const before = validate.validation(elem)
+      expect(before).to.be.true
+    })
+
+    test('should return valid regex', () => {
+      /* eslint-disable-next-line */
+      elem.setAttribute('data-validate-regex', '\d+')
+      elem.value = '1234'
+
+      const before = validate.validation(elem)
+      expect(before).to.be.false
+    })
+
     test('should return input not checked', () => {
       document.body.innerHTML = `
         <form id="form">

@@ -115,6 +115,36 @@
 
         <div class="uk-width-1-1">
           <div class="uk-margin">
+            <input
+              type="url"
+              class="uk-input"
+              id="input-url"
+              name="url"
+              placeholder="URL"
+              autocomplete="off"
+              data-required
+              data-validate-rule="url"
+              data-validate-msg="URL is required field">
+          </div>
+        </div>
+
+        <div class="uk-width-1-1">
+          <div class="uk-margin">
+            <input
+              type="text"
+              id="input-name"
+              class="uk-input"
+              name="name"
+              placeholder="Only numbers"
+              autocomplete="off"
+              data-required
+              data-validate-regex="\d+"
+              data-validate-msg="Only numbers is required field">
+          </div>
+        </div>
+
+        <div class="uk-width-1-1">
+          <div class="uk-margin">
             <div class="uk-form-controls" data-required data-validate-msg="Select an option">
               <label><input class="uk-radio" type="radio" name="sex" value="female"> Female</label>&nbsp;
               <label><input class="uk-radio" type="radio" name="sex" value="male"> Male</label>

@@ -82,6 +82,25 @@ Add `data-required` attribute on `<input />` tag:
 |`data-validate-rule="cpf"`|Check valid CPF|
 |`data-validate-rule="rg"`|Check valid RG|
 |`data-validate-rule="cep"`|Check valid CEP|
+|`data-validate-rule="url"`|Check valid CEP|
+
+#### Regex attribute
+
+data-validate-regex="\d+"
+Add `data-validate-regex` attribute on `<input />` tag:
+
+```html
+<div class="form-group">
+  <input
+    type="text"
+    name="name"
+    placeholder="Only numbers"
+    autocomplete="off"
+    data-required
+    data-validate-regex="\d+"
+    data-validate-msg="Only numbers is required field">
+</div>
+```
 
 #### Custom error message
 
