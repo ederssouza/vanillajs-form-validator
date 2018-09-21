@@ -12,7 +12,7 @@ npm install vanillajs-form-validator --save
 
 ## How to use
 
-1. Create HTML markup with `data-required` on `<input />` tag:
+1 - Create HTML markup with `data-required` on `<input />` tag:
 
 ```html
 <form id="form" novalidate>
@@ -29,7 +29,7 @@ npm install vanillajs-form-validator --save
 </form>
 ```
 
-1. Create validator instance and call `.init()` method:
+2 - Create validator instance and call `.init()` method:
 
 ```javascript
 var form = document.getElementById('form')
