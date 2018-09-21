@@ -1,6 +1,6 @@
 # VanillaJS Form Validator
 
-[![Build Status](https://travis-ci.org/ederssouza/vanillajs-form-validator.svg?branch=master)](https://travis-ci.org/ederssouza/vanillajs-form-validator) [![npm version](http://img.shields.io/npm/v/vanillajs-form-validator.svg)](https://npmjs.org/package/vanillajs-form-validator) [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/ederssouza/vanillajs-form-validator/raw/master/LICENSE.md)
+[![Build Status](https://travis-ci.org/ederssouza/vanillajs-form-validator.svg?branch=master)](https://travis-ci.org/ederssouza/vanillajs-form-validator) [![Coverage Status](https://coveralls.io/repos/github/ederssouza/vanillajs-form-validator/badge.svg)](https://coveralls.io/github/ederssouza/vanillajs-form-validator) [![npm version](http://img.shields.io/npm/v/vanillajs-form-validator.svg)](https://npmjs.org/package/vanillajs-form-validator) [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/ederssouza/vanillajs-form-validator/raw/master/LICENSE.md)
 
 Form validation in pure JavaScript.
 
