@@ -7,7 +7,7 @@ Form validation in pure JavaScript.
 ## Installation
 
 ```bash
-$ npm install vanillajs-form-validator --save
+npm install vanillajs-form-validator --save
 ```
 
 ## How to use
@@ -29,7 +29,7 @@ $ npm install vanillajs-form-validator --save
 </form>
 ```
 
-2. Create validator instance and call `.init()` method:
+1. Create validator instance and call `.init()` method:
 
 ```javascript
 var form = document.getElementById('form')
