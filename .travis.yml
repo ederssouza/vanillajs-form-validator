@@ -11,3 +11,4 @@ before_script:
   - npm run build
 
 after_success:
+  - "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
