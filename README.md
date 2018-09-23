@@ -170,7 +170,7 @@ formValidate.init()
 
 ### Full example
 
-[Click here](https://ederssouza.github.io/vanillajs-form-validator/samples) to view demo.
+[Click here](https://ederssouza.github.io/vanillajs-form-validator/samples/index.html) to view demo.
 
 ```javascript
 var form = document.getElementById('form')
