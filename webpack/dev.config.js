@@ -20,13 +20,13 @@ module.exports = {
   plugins: common.plugins.concat(
     new HtmlWebpackPlugin({
       filename: 'index.html',
-      template: './index.html',
+      template: './samples/index.html',
       inject: false
     })
   ),
 
   devServer: {
-    contentBase: path.join(__dirname, '../'),
+    contentBase: path.join(__dirname, '../', 'samples'),
     compress: true,
     watchContentBase: true,
     port: 3000
