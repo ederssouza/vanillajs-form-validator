@@ -71,7 +71,7 @@ class FormValidate {
     const msg = parent.querySelector(`.${this.msgClass}`)
 
     if (msg) {
-      parent.removeChild(msg)
+      msg.remove();
     }
   }
 
