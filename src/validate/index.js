@@ -267,7 +267,7 @@ class FormValidate {
     if (!this.checkValidFields()) {
       let i
       let requiredField
-      const requiredFields = document.querySelectorAll(`[data-required]:not(.${this.validClass})`)
+      const requiredFields = this.form.querySelectorAll(`[data-required]:not(.${this.validClass})`)
 
       for (i = 0; i < requiredFields.length; i++) {
         requiredField = requiredFields[i]
