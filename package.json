@@ -1,7 +1,7 @@
 {
   "name": "vanillajs-form-validator",
   "version": "2.0.0",
-  "description": "ScrollSpy in pure JavaScript",
+  "description": "Form validation in pure JavaScript",
   "main": "dist/vanillajs-form-validator.cjs.js",
   "module": "dist/vanillajs-form-validator.es.js",
   "scripts": {
