@@ -10,10 +10,19 @@ describe('FormValidate', () => {
   let formSelector
   let formValidate
 
+  const defaultValues = {
+    inputGroupClass: 'form-group',
+    validClass: 'custom-valid-css-class',
+    invalidClass: 'custom-invalid-css-class',
+    msgClass: 'custom-error-msg-css-class'
+  }
+
+  const { validClass, invalidClass, msgClass } = defaultValues
+
   beforeEach(() => {
     document.body.innerHTML = renderHTML()
     formSelector = document.querySelector('#form')
-    formValidate = FormValidate({ formSelector })
+    formValidate = FormValidate({ formSelector, ...defaultValues })
   })
 
   afterEach(() => {
@@ -70,8 +79,8 @@ describe('FormValidate', () => {
         dispatchEvent(formSelector, 'submit')
 
         expect(formValidate.hasValidFields()).toBe(false)
-        expect(requiredInput.classList.contains('invalid')).toBe(true)
-        expect(inputGroup.querySelector('.error-msg')).toBeDefined()
+        expect(requiredInput.classList.contains(invalidClass)).toBe(true)
+        expect(inputGroup.querySelector(`.${msgClass}`)).toBeDefined()
         expect(inputGroup.textContent).toContain('Required field')
       })
     })
@@ -89,9 +98,9 @@ describe('FormValidate', () => {
           dispatchEvent(requiredInput, 'keyup')
 
           expect(formValidate.hasValidFields()).toBe(false)
-          expect(requiredInput.classList.contains('invalid')).toBe(true)
-          expect(requiredInput.classList.contains('valid')).toBe(false)
-          expect(inputGroup.querySelector('.error-msg')).toBeDefined()
+          expect(requiredInput.classList.contains(invalidClass)).toBe(true)
+          expect(requiredInput.classList.contains(validClass)).toBe(false)
+          expect(inputGroup.querySelector(`.${msgClass}`)).toBeDefined()
           expect(inputGroup.textContent).toContain('Required field')
         })
       })
@@ -112,9 +121,9 @@ describe('FormValidate', () => {
             optional: ''
           })
 
-          expect(requiredInput.classList.contains('invalid')).toBe(false)
-          expect(requiredInput.classList.contains('valid')).toBe(true)
-          expect(inputGroup.querySelector('.error-msg')).toBeNull()
+          expect(requiredInput.classList.contains(invalidClass)).toBe(false)
+          expect(requiredInput.classList.contains(validClass)).toBe(true)
+          expect(inputGroup.querySelector(`.${msgClass}`)).toBeNull()
         })
       })
     })
@@ -130,9 +139,9 @@ describe('FormValidate', () => {
           dispatchEvent(requiredInput, 'input')
 
           expect(formValidate.hasValidFields()).toBe(false)
-          expect(requiredInput.classList.contains('invalid')).toBe(true)
-          expect(requiredInput.classList.contains('valid')).toBe(false)
-          expect(inputGroup.querySelector('.error-msg')).toBeDefined()
+          expect(requiredInput.classList.contains(invalidClass)).toBe(true)
+          expect(requiredInput.classList.contains(validClass)).toBe(false)
+          expect(inputGroup.querySelector(`.${msgClass}`)).toBeDefined()
           expect(inputGroup.textContent).toContain('Required field')
         })
       })
@@ -153,9 +162,9 @@ describe('FormValidate', () => {
             optional: ''
           })
 
-          expect(requiredInput.classList.contains('invalid')).toBe(false)
-          expect(requiredInput.classList.contains('valid')).toBe(true)
-          expect(inputGroup.querySelector('.error-msg')).toBeNull()
+          expect(requiredInput.classList.contains(invalidClass)).toBe(false)
+          expect(requiredInput.classList.contains(validClass)).toBe(true)
+          expect(inputGroup.querySelector(`.${msgClass}`)).toBeNull()
         })
       })
     })
@@ -171,9 +180,9 @@ describe('FormValidate', () => {
           dispatchEvent(requiredInput, 'change')
 
           expect(formValidate.hasValidFields()).toBe(false)
-          expect(requiredInput.classList.contains('invalid')).toBe(true)
-          expect(requiredInput.classList.contains('valid')).toBe(false)
-          expect(inputGroup.querySelector('.error-msg')).toBeDefined()
+          expect(requiredInput.classList.contains(invalidClass)).toBe(true)
+          expect(requiredInput.classList.contains(validClass)).toBe(false)
+          expect(inputGroup.querySelector(`.${msgClass}`)).toBeDefined()
           expect(inputGroup.textContent).toContain('Required field')
         })
       })
@@ -194,9 +203,9 @@ describe('FormValidate', () => {
             optional: ''
           })
 
-          expect(requiredInput.classList.contains('invalid')).toBe(false)
-          expect(requiredInput.classList.contains('valid')).toBe(true)
-          expect(inputGroup.querySelector('.error-msg')).toBeNull()
+          expect(requiredInput.classList.contains(invalidClass)).toBe(false)
+          expect(requiredInput.classList.contains(validClass)).toBe(true)
+          expect(inputGroup.querySelector(`.${msgClass}`)).toBeNull()
         })
       })
     })
@@ -212,9 +221,9 @@ describe('FormValidate', () => {
           dispatchEvent(requiredInput, 'blur')
 
           expect(formValidate.hasValidFields()).toBe(false)
-          expect(requiredInput.classList.contains('invalid')).toBe(true)
-          expect(requiredInput.classList.contains('valid')).toBe(false)
-          expect(inputGroup.querySelector('.error-msg')).toBeDefined()
+          expect(requiredInput.classList.contains(invalidClass)).toBe(true)
+          expect(requiredInput.classList.contains(validClass)).toBe(false)
+          expect(inputGroup.querySelector(`.${msgClass}`)).toBeDefined()
           expect(inputGroup.textContent).toContain('Required field')
         })
       })
@@ -235,9 +244,9 @@ describe('FormValidate', () => {
             optional: ''
           })
 
-          expect(requiredInput.classList.contains('invalid')).toBe(false)
-          expect(requiredInput.classList.contains('valid')).toBe(true)
-          expect(inputGroup.querySelector('.error-msg')).toBeNull()
+          expect(requiredInput.classList.contains(invalidClass)).toBe(false)
+          expect(requiredInput.classList.contains(validClass)).toBe(true)
+          expect(inputGroup.querySelector(`.${msgClass}`)).toBeNull()
         })
       })
     })
@@ -274,8 +283,8 @@ describe('FormValidate', () => {
           element.type !== 'checkbox' &&
           element.type !== 'submit'
         ) {
-          expect(requiredInput.classList.contains('invalid')).toBe(false)
-          expect(requiredInput.classList.contains('valid')).toBe(false)
+          expect(requiredInput.classList.contains(invalidClass)).toBe(false)
+          expect(requiredInput.classList.contains(validClass)).toBe(false)
         }
       })
     })

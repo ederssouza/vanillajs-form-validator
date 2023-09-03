@@ -2,9 +2,9 @@ class FormValidate {
   constructor({
     formSelector,
     inputGroupClass = 'form-group',
-    validClass = 'valid',
-    invalidClass = 'invalid',
-    msgClass = 'error-msg'
+    validClass = 'valid-field',
+    invalidClass = 'invalid-field',
+    msgClass = 'error-msg-field'
   }) {
     if (!(formSelector instanceof window.Element)) {
       throw new TypeError('formSelector should a valid selector')
