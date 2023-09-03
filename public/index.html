@@ -55,7 +55,7 @@
       formValidate.init()
 
       form.addEventListener('submit', () => {
-        const isValid = formValidate.checkValidFields()
+        const isValid = formValidate.hasValidFields()
 
         if (isValid) {
           console.table(formValidate.getValues())
