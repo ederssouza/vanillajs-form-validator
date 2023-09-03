@@ -52,8 +52,11 @@ describe('FormValidate', () => {
   describe('when the form is submitted', () => {
     describe('and there are no required fields', () => {
       beforeEach(() => {
-        const requiredInput = document.querySelector("[name='name']")
-        requiredInput.removeAttribute('data-required')
+        const inputs = document.querySelectorAll('[data-required]')
+
+        Array.from(inputs).forEach((element) => {
+          element.removeAttribute('data-required')
+        })
       })
 
       it('should return form values', () => {
@@ -64,7 +67,9 @@ describe('FormValidate', () => {
         expect(formValidate.hasValidFields()).toBe(true)
         expect(formValidate.getValues()).toEqual({
           name: '',
-          optional: ''
+          optional: '',
+          options: '',
+          comments: ''
         })
       })
     })
@@ -107,22 +112,30 @@ describe('FormValidate', () => {
 
       describe('and has valid value', () => {
         it('should return form values', () => {
-          const requiredInput = document.querySelector("[name='name']")
-          const inputGroup = requiredInput.parentNode
+          const nameInput = document.querySelector("[name='name']")
+          const optionsSelect = document.querySelector("[name='options']")
+          const commentsTextarea = document.querySelector("[name='comments']")
+          const inputGroup = nameInput.parentNode
 
           formValidate.init()
-          requiredInput.value = 'name value'
+          nameInput.value = 'name value'
+          optionsSelect.value = 'option2'
+          commentsTextarea.value = 'comments'
 
-          dispatchEvent(requiredInput, 'keyup')
+          dispatchEvent(nameInput, 'keyup')
+          dispatchEvent(optionsSelect, 'change')
+          dispatchEvent(commentsTextarea, 'change')
 
           expect(formValidate.hasValidFields()).toBe(true)
           expect(formValidate.getValues()).toEqual({
             name: 'name value',
-            optional: ''
+            optional: '',
+            options: 'option2',
+            comments: 'comments'
           })
 
-          expect(requiredInput.classList.contains(invalidClass)).toBe(false)
-          expect(requiredInput.classList.contains(validClass)).toBe(true)
+          expect(nameInput.classList.contains(invalidClass)).toBe(false)
+          expect(nameInput.classList.contains(validClass)).toBe(true)
           expect(inputGroup.querySelector(`.${msgClass}`)).toBeNull()
         })
       })
@@ -148,22 +161,30 @@ describe('FormValidate', () => {
 
       describe('and has valid value', () => {
         it('should return form values', () => {
-          const requiredInput = document.querySelector("[name='name']")
-          const inputGroup = requiredInput.parentNode
+          const nameInput = document.querySelector("[name='name']")
+          const optionsSelect = document.querySelector("[name='options']")
+          const commentsTextarea = document.querySelector("[name='comments']")
+          const inputGroup = nameInput.parentNode
 
           formValidate.init()
-          requiredInput.value = 'name value'
+          nameInput.value = 'name value'
+          optionsSelect.value = 'option2'
+          commentsTextarea.value = 'comments'
 
-          dispatchEvent(requiredInput, 'input')
+          dispatchEvent(nameInput, 'input')
+          dispatchEvent(optionsSelect, 'change')
+          dispatchEvent(commentsTextarea, 'change')
 
           expect(formValidate.hasValidFields()).toBe(true)
           expect(formValidate.getValues()).toEqual({
             name: 'name value',
-            optional: ''
+            optional: '',
+            options: 'option2',
+            comments: 'comments'
           })
 
-          expect(requiredInput.classList.contains(invalidClass)).toBe(false)
-          expect(requiredInput.classList.contains(validClass)).toBe(true)
+          expect(nameInput.classList.contains(invalidClass)).toBe(false)
+          expect(nameInput.classList.contains(validClass)).toBe(true)
           expect(inputGroup.querySelector(`.${msgClass}`)).toBeNull()
         })
       })
@@ -189,22 +210,30 @@ describe('FormValidate', () => {
 
       describe('and has valid value', () => {
         it('should return form values', () => {
-          const requiredInput = document.querySelector("[name='name']")
-          const inputGroup = requiredInput.parentNode
+          const nameInput = document.querySelector("[name='name']")
+          const optionsSelect = document.querySelector("[name='options']")
+          const commentsTextarea = document.querySelector("[name='comments']")
+          const inputGroup = nameInput.parentNode
 
           formValidate.init()
-          requiredInput.value = 'name value'
+          nameInput.value = 'name value'
+          optionsSelect.value = 'option2'
+          commentsTextarea.value = 'comments'
 
-          dispatchEvent(requiredInput, 'change')
+          dispatchEvent(nameInput, 'change')
+          dispatchEvent(optionsSelect, 'change')
+          dispatchEvent(commentsTextarea, 'change')
 
           expect(formValidate.hasValidFields()).toBe(true)
           expect(formValidate.getValues()).toEqual({
             name: 'name value',
-            optional: ''
+            optional: '',
+            options: 'option2',
+            comments: 'comments'
           })
 
-          expect(requiredInput.classList.contains(invalidClass)).toBe(false)
-          expect(requiredInput.classList.contains(validClass)).toBe(true)
+          expect(nameInput.classList.contains(invalidClass)).toBe(false)
+          expect(nameInput.classList.contains(validClass)).toBe(true)
           expect(inputGroup.querySelector(`.${msgClass}`)).toBeNull()
         })
       })
@@ -230,22 +259,30 @@ describe('FormValidate', () => {
 
       describe('and has valid value', () => {
         it('should return form values', () => {
-          const requiredInput = document.querySelector("[name='name']")
-          const inputGroup = requiredInput.parentNode
+          const nameInput = document.querySelector("[name='name']")
+          const optionsSelect = document.querySelector("[name='options']")
+          const commentsTextarea = document.querySelector("[name='comments']")
+          const inputGroup = nameInput.parentNode
 
           formValidate.init()
-          requiredInput.value = 'name value'
+          nameInput.value = 'name value'
+          optionsSelect.value = 'option2'
+          commentsTextarea.value = 'comments'
 
-          dispatchEvent(requiredInput, 'blur')
+          dispatchEvent(nameInput, 'blur')
+          dispatchEvent(optionsSelect, 'change')
+          dispatchEvent(commentsTextarea, 'change')
 
           expect(formValidate.hasValidFields()).toBe(true)
           expect(formValidate.getValues()).toEqual({
             name: 'name value',
-            optional: ''
+            optional: '',
+            options: 'option2',
+            comments: 'comments'
           })
 
-          expect(requiredInput.classList.contains(invalidClass)).toBe(false)
-          expect(requiredInput.classList.contains(validClass)).toBe(true)
+          expect(nameInput.classList.contains(invalidClass)).toBe(false)
+          expect(nameInput.classList.contains(validClass)).toBe(true)
           expect(inputGroup.querySelector(`.${msgClass}`)).toBeNull()
         })
       })
@@ -255,36 +292,44 @@ describe('FormValidate', () => {
   describe('when call reset method', () => {
     it('should reset all form fields', () => {
       const formFields = formSelector.elements
-      const requiredInput = document.querySelector("[name='name']")
+      const nameInput = document.querySelector("[name='name']")
       const optionalInput = document.querySelector("[name='optional']")
+      const optionsSelect = document.querySelector("[name='options']")
+      const commentsTextarea = document.querySelector("[name='comments']")
 
       formValidate.init()
-      requiredInput.value = 'name value'
+      nameInput.value = 'name value'
       optionalInput.value = 'optional value'
+      optionsSelect.value = 'option2'
+      commentsTextarea.value = 'comments'
 
-      dispatchEvent(requiredInput, 'blur')
+      dispatchEvent(nameInput, 'blur')
+      dispatchEvent(optionsSelect, 'change')
+      dispatchEvent(commentsTextarea, 'change')
 
       expect(formValidate.hasValidFields()).toBe(true)
       expect(formValidate.getValues()).toEqual({
         name: 'name value',
-        optional: 'optional value'
+        optional: 'optional value',
+        options: 'option2',
+        comments: 'comments'
       })
 
       formValidate.reset()
 
       expect(formValidate.getValues()).toEqual({
         name: '',
-        optional: ''
+        optional: '',
+        options: '',
+        comments: ''
       })
 
       Array.from(formFields).forEach((element) => {
-        if (
-          element.type !== 'radio' &&
-          element.type !== 'checkbox' &&
-          element.type !== 'submit'
-        ) {
-          expect(requiredInput.classList.contains(invalidClass)).toBe(false)
-          expect(requiredInput.classList.contains(validClass)).toBe(false)
+        const isButtons = element.type === 'submit' || element.type === 'reset'
+
+        if (!isButtons) {
+          expect(element.classList.contains(invalidClass)).toBe(false)
+          expect(element.classList.contains(validClass)).toBe(false)
         }
       })
     })
