@@ -37,24 +37,29 @@
     <form id="form">
       <div class="form-group">
         <label for="">Name</label>
-        <input
-          type="text"
-          name="name"
-          placeholder="Name"
-          autocomplete="off"
-          data-required
-        >
+        <input type="text" name="name" placeholder="Name" data-required />
       </div>
 
       <div class="form-group">
         <label for="">E-mail</label>
-        <input
-          type="text"
-          name="email"
-          placeholder="E-mail"
-          autocomplete="off"
+        <input type="text" name="email" placeholder="E-mail" data-required />
+      </div>
+
+      <div class="form-group">
+        <label for="">Options</label>
+        <select type="text" name="options" data-required>
+          <option value="option1">Option 1</option>
+          <option value="option2">Option 2</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="">Comments</label>
+        <textarea
+          name="comments"
+          placeholder="Comments"
           data-required
-        >
+        ></textarea>
       </div>
 
       <button type="submit">Submit</button>
