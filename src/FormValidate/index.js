@@ -20,22 +20,23 @@ class FormValidate {
   submit(event) {
     event.preventDefault()
 
-    if (this.hasValidFields()) {
-      return true
-    }
-
-    const requiredFormFields = this._form.querySelectorAll(
-      `[data-required]:not(.${this._validClass})`
+    const requiredFormGroups = this._form.querySelectorAll(
+      `.${this._inputGroupClass}`
     )
 
-    requiredFormFields.forEach((requiredField) => {
-      const formGroup = requiredField.closest(`.${this._inputGroupClass}`)
-      this.addError(formGroup)
+    requiredFormGroups.forEach((requiredFormGroup) => {
+      const requiredField = requiredFormGroup.querySelector('[data-required]')
+      if (requiredField) {
+        this.validation({ target: requiredField })
+      }
     })
 
-    requiredFormFields?.[0]?.focus()
-
-    return false
+    if (this.hasValidFields()) {
+      return true
+    } else {
+      requiredFormGroups?.[0]?.focus()
+      return false
+    }
   }
 
   hasValidFields() {
@@ -104,6 +105,13 @@ class FormValidate {
       field.addEventListener('change', (event) => this.validation(event))
       field.addEventListener('blur', (event) => this.validation(event))
 
+      if (field.type === 'radio' || field.type === 'checkbox') {
+        if (field.checked) {
+          this.validation({ target: field })
+        }
+        return
+      }
+
       if (field.value.trim().length) {
         this.validation({ target: field })
       }
@@ -118,7 +126,13 @@ class FormValidate {
     const field = event.target
     const formGroup = field.closest(`.${this._inputGroupClass}`)
 
-    !field.value ? this.addError(formGroup) : this.addSuccess(formGroup)
+    if (field.type === 'checkbox' || field.type === 'radio') {
+      field.checked ? this.addSuccess(formGroup) : this.addError(formGroup)
+    } else {
+      !field.value.trim()
+        ? this.addError(formGroup)
+        : this.addSuccess(formGroup)
+    }
 
     return this.hasValidFields()
   }
@@ -133,7 +147,7 @@ class FormValidate {
 
     errorMessage.classList.add(this._msgClass)
     errorMessage.innerHTML =
-      field.getAttribute('data-validate-msg') || 'Required field'
+      field?.getAttribute('data-validate-msg') || 'Required field'
 
     if (!isErrorMessage) {
       formGroup.appendChild(errorMessage)
