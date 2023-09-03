@@ -45,11 +45,9 @@ class FormValidate {
     const $formElements = this._form.elements
 
     return Array.from($formElements).reduce((acc, element) => {
-      if (
-        element.type !== 'radio' &&
-        element.type !== 'checkbox' &&
-        element.type !== 'submit'
-      ) {
+      const isButtons = element.type === 'submit' || element.type === 'reset'
+
+      if (!isButtons) {
         acc[element.name] = element.value
       }
 
