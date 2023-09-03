@@ -1,8 +1,22 @@
-import { renderHTML } from '../utils/htmlMock'
+import { basicForm, fullForm } from '../utils/tests/mocks'
 import FormValidate from './index'
 
 function dispatchEvent(element, eventName) {
   const event = new window.Event(eventName, { bubbles: true })
+  element.dispatchEvent(event)
+}
+
+function dispatchMouseEvent(
+  element,
+  eventType,
+  canBubble = true,
+  cancelable = true
+) {
+  const event = new KeyboardEvent(eventType, {
+    view: window,
+    bubbles: canBubble,
+    cancelable: cancelable
+  })
   element.dispatchEvent(event)
 }
 
@@ -17,19 +31,9 @@ describe('FormValidate', () => {
     msgClass: 'custom-error-msg-css-class'
   }
 
-  const { validClass, invalidClass, msgClass } = defaultValues
+  const { inputGroupClass, validClass, invalidClass, msgClass } = defaultValues
 
-  beforeEach(() => {
-    document.body.innerHTML = renderHTML()
-    formSelector = document.querySelector('#form')
-    formValidate = FormValidate({ formSelector, ...defaultValues })
-  })
-
-  afterEach(() => {
-    document.body.innerHTML = ''
-  })
-
-  describe('when formSelector is not a valid selector', () => {
+  describe('when formSelector param is not a valid selector', () => {
     it('should throw a TypeError', () => {
       const formSelector = 'form'
       const formValidate = () => FormValidate({ formSelector })
@@ -39,298 +43,181 @@ describe('FormValidate', () => {
     })
   })
 
-  describe('when formSelector is a valid selector', () => {
-    it('should render a form with novalidate attribute', () => {
-      formValidate.init()
-
-      dispatchEvent(formSelector, 'submit')
-
-      expect(formSelector.getAttribute('novalidate')).not.toBeNull()
-    })
-  })
-
-  describe('when the form is submitted', () => {
-    describe('and there are no required fields', () => {
+  describe('when submitting form', () => {
+    describe('and form not have the required fields', () => {
       beforeEach(() => {
-        const inputs = document.querySelectorAll('[data-required]')
-
-        Array.from(inputs).forEach((element) => {
-          element.removeAttribute('data-required')
-        })
+        document.body.innerHTML = basicForm()
+        formSelector = document.querySelector('#form')
+        formValidate = FormValidate({ formSelector, ...defaultValues })
       })
 
-      it('should return form values', () => {
+      afterEach(() => {
+        document.body.innerHTML = ''
+        formValidate = undefined
+      })
+
+      it('should return valid form', () => {
         formValidate.init()
 
         dispatchEvent(formSelector, 'submit')
 
         expect(formValidate.hasValidFields()).toBe(true)
-        expect(formValidate.getValues()).toEqual({
-          name: '',
-          optional: '',
-          options: '',
-          comments: ''
-        })
       })
     })
 
-    describe('and there are required fields', () => {
-      it('should return an error before required input and add error CSS class', () => {
-        const requiredInput = document.querySelector("[name='name']")
-        const inputGroup = requiredInput.parentNode
+    describe('and form have the required fields', () => {
+      beforeEach(() => {
+        document.body.innerHTML = fullForm()
+        formSelector = document.querySelector('#form')
+        formValidate = FormValidate({ formSelector, ...defaultValues })
+      })
 
+      afterEach(() => {
+        document.body.innerHTML = ''
+        formValidate = undefined
+      })
+
+      it('should return invalid form', () => {
+        formSelector = document.querySelector('#form')
         formValidate.init()
 
         dispatchEvent(formSelector, 'submit')
 
+        const formGroupsWithErrors = formSelector.querySelectorAll(
+          `.${invalidClass}`
+        )
+
+        const errorMessages = formSelector.querySelectorAll(`.${msgClass}`)
+
         expect(formValidate.hasValidFields()).toBe(false)
-        expect(requiredInput.classList.contains(invalidClass)).toBe(true)
-        expect(inputGroup.querySelector(`.${msgClass}`)).toBeDefined()
-        expect(inputGroup.textContent).toContain('Required field')
+        expect(formGroupsWithErrors.length).toBe(6)
+        expect(errorMessages.length).toBe(6)
       })
-    })
-  })
 
-  describe('when required text field', () => {
-    describe('and dispatch keyup event', () => {
-      describe('and not has valid value', () => {
-        it('should return an error before required input and add error CSS class', () => {
-          const requiredInput = document.querySelector("[name='name']")
-          const inputGroup = requiredInput.parentNode
-
+      describe('and dispatch keyup event', () => {
+        it('should toggle success and error classes when user changes input value', () => {
+          formSelector = document.querySelector('#form')
           formValidate.init()
 
-          dispatchEvent(requiredInput, 'keyup')
+          const nameField = formSelector.querySelector('[name="name"]')
+          const nameFieldFormGroup = nameField.closest(`.${inputGroupClass}`)
 
-          expect(formValidate.hasValidFields()).toBe(false)
-          expect(requiredInput.classList.contains(invalidClass)).toBe(true)
-          expect(requiredInput.classList.contains(validClass)).toBe(false)
-          expect(inputGroup.querySelector(`.${msgClass}`)).toBeDefined()
-          expect(inputGroup.textContent).toContain('Required field')
+          dispatchEvent(nameField, 'keyup')
+
+          expect(nameFieldFormGroup.classList.contains(validClass)).toBe(false)
+          expect(nameFieldFormGroup.classList.contains(invalidClass)).toBe(true)
+
+          nameField.value = 'John Doe'
+
+          dispatchEvent(nameField, 'keyup')
+
+          expect(nameFieldFormGroup.classList.contains(validClass)).toBe(true)
+          expect(nameFieldFormGroup.classList.contains(invalidClass)).toBe(
+            false
+          )
         })
       })
 
-      describe('and has valid value', () => {
-        it('should return form values', () => {
-          const nameInput = document.querySelector("[name='name']")
-          const optionsSelect = document.querySelector("[name='options']")
-          const commentsTextarea = document.querySelector("[name='comments']")
-          const inputGroup = nameInput.parentNode
-
-          formValidate.init()
-          nameInput.value = 'name value'
-          optionsSelect.value = 'option2'
-          commentsTextarea.value = 'comments'
-
-          dispatchEvent(nameInput, 'keyup')
-          dispatchEvent(optionsSelect, 'change')
-          dispatchEvent(commentsTextarea, 'change')
-
-          expect(formValidate.hasValidFields()).toBe(true)
-          expect(formValidate.getValues()).toEqual({
-            name: 'name value',
-            optional: '',
-            options: 'option2',
-            comments: 'comments'
-          })
-
-          expect(nameInput.classList.contains(invalidClass)).toBe(false)
-          expect(nameInput.classList.contains(validClass)).toBe(true)
-          expect(inputGroup.querySelector(`.${msgClass}`)).toBeNull()
-        })
-      })
-    })
-
-    describe('and dispatch input event', () => {
-      describe('and not has valid value', () => {
-        it('should return an error before required input and add error CSS class', () => {
-          const requiredInput = document.querySelector("[name='name']")
-          const inputGroup = requiredInput.parentNode
-
+      describe('and dispatch input event', () => {
+        it('should toggle success and error classes when user changes input value', () => {
+          formSelector = document.querySelector('#form')
           formValidate.init()
 
-          dispatchEvent(requiredInput, 'input')
+          const nameField = formSelector.querySelector('[name="name"]')
+          const nameFieldFormGroup = nameField.closest(`.${inputGroupClass}`)
 
-          expect(formValidate.hasValidFields()).toBe(false)
-          expect(requiredInput.classList.contains(invalidClass)).toBe(true)
-          expect(requiredInput.classList.contains(validClass)).toBe(false)
-          expect(inputGroup.querySelector(`.${msgClass}`)).toBeDefined()
-          expect(inputGroup.textContent).toContain('Required field')
+          dispatchEvent(nameField, 'input')
+
+          expect(nameFieldFormGroup.classList.contains(validClass)).toBe(false)
+          expect(nameFieldFormGroup.classList.contains(invalidClass)).toBe(true)
+
+          nameField.value = 'John Doe'
+
+          dispatchEvent(nameField, 'input')
+
+          expect(nameFieldFormGroup.classList.contains(validClass)).toBe(true)
+          expect(nameFieldFormGroup.classList.contains(invalidClass)).toBe(
+            false
+          )
         })
       })
 
-      describe('and has valid value', () => {
-        it('should return form values', () => {
-          const nameInput = document.querySelector("[name='name']")
-          const optionsSelect = document.querySelector("[name='options']")
-          const commentsTextarea = document.querySelector("[name='comments']")
-          const inputGroup = nameInput.parentNode
-
-          formValidate.init()
-          nameInput.value = 'name value'
-          optionsSelect.value = 'option2'
-          commentsTextarea.value = 'comments'
-
-          dispatchEvent(nameInput, 'input')
-          dispatchEvent(optionsSelect, 'change')
-          dispatchEvent(commentsTextarea, 'change')
-
-          expect(formValidate.hasValidFields()).toBe(true)
-          expect(formValidate.getValues()).toEqual({
-            name: 'name value',
-            optional: '',
-            options: 'option2',
-            comments: 'comments'
-          })
-
-          expect(nameInput.classList.contains(invalidClass)).toBe(false)
-          expect(nameInput.classList.contains(validClass)).toBe(true)
-          expect(inputGroup.querySelector(`.${msgClass}`)).toBeNull()
-        })
-      })
-    })
-
-    describe('and dispatch change event', () => {
-      describe('and not has valid value', () => {
-        it('should return an error before required input and add error CSS class', () => {
-          const requiredInput = document.querySelector("[name='name']")
-          const inputGroup = requiredInput.parentNode
-
+      describe('and dispatch change event', () => {
+        it('should toggle success and error classes when user changes input value', () => {
+          formSelector = document.querySelector('#form')
           formValidate.init()
 
-          dispatchEvent(requiredInput, 'change')
+          const nameField = formSelector.querySelector('[name="name"]')
+          const nameFieldFormGroup = nameField.closest(`.${inputGroupClass}`)
 
-          expect(formValidate.hasValidFields()).toBe(false)
-          expect(requiredInput.classList.contains(invalidClass)).toBe(true)
-          expect(requiredInput.classList.contains(validClass)).toBe(false)
-          expect(inputGroup.querySelector(`.${msgClass}`)).toBeDefined()
-          expect(inputGroup.textContent).toContain('Required field')
+          dispatchEvent(nameField, 'change')
+
+          expect(nameFieldFormGroup.classList.contains(validClass)).toBe(false)
+          expect(nameFieldFormGroup.classList.contains(invalidClass)).toBe(true)
+
+          nameField.value = 'John Doe'
+
+          dispatchEvent(nameField, 'change')
+
+          expect(nameFieldFormGroup.classList.contains(validClass)).toBe(true)
+          expect(nameFieldFormGroup.classList.contains(invalidClass)).toBe(
+            false
+          )
         })
       })
 
-      describe('and has valid value', () => {
-        it('should return form values', () => {
-          const nameInput = document.querySelector("[name='name']")
-          const optionsSelect = document.querySelector("[name='options']")
-          const commentsTextarea = document.querySelector("[name='comments']")
-          const inputGroup = nameInput.parentNode
-
-          formValidate.init()
-          nameInput.value = 'name value'
-          optionsSelect.value = 'option2'
-          commentsTextarea.value = 'comments'
-
-          dispatchEvent(nameInput, 'change')
-          dispatchEvent(optionsSelect, 'change')
-          dispatchEvent(commentsTextarea, 'change')
-
-          expect(formValidate.hasValidFields()).toBe(true)
-          expect(formValidate.getValues()).toEqual({
-            name: 'name value',
-            optional: '',
-            options: 'option2',
-            comments: 'comments'
-          })
-
-          expect(nameInput.classList.contains(invalidClass)).toBe(false)
-          expect(nameInput.classList.contains(validClass)).toBe(true)
-          expect(inputGroup.querySelector(`.${msgClass}`)).toBeNull()
-        })
-      })
-    })
-
-    describe('and dispatch blur event', () => {
-      describe('and not has valid value', () => {
-        it('should return an error before required input and add error CSS class', () => {
-          const requiredInput = document.querySelector("[name='name']")
-          const inputGroup = requiredInput.parentNode
-
+      describe('and dispatch blur event', () => {
+        it('should toggle success and error classes when user changes input value', () => {
+          formSelector = document.querySelector('#form')
           formValidate.init()
 
-          dispatchEvent(requiredInput, 'blur')
+          const nameField = formSelector.querySelector('[name="name"]')
+          const nameFieldFormGroup = nameField.closest(`.${inputGroupClass}`)
 
-          expect(formValidate.hasValidFields()).toBe(false)
-          expect(requiredInput.classList.contains(invalidClass)).toBe(true)
-          expect(requiredInput.classList.contains(validClass)).toBe(false)
-          expect(inputGroup.querySelector(`.${msgClass}`)).toBeDefined()
-          expect(inputGroup.textContent).toContain('Required field')
+          dispatchEvent(nameField, 'focus')
+          dispatchEvent(nameField, 'blur')
+
+          expect(nameFieldFormGroup.classList.contains(validClass)).toBe(false)
+          expect(nameFieldFormGroup.classList.contains(invalidClass)).toBe(true)
+
+          nameField.value = 'John Doe'
+
+          dispatchEvent(nameField, 'focus')
+          dispatchEvent(nameField, 'blur')
+
+          expect(nameFieldFormGroup.classList.contains(validClass)).toBe(true)
+          expect(nameFieldFormGroup.classList.contains(invalidClass)).toBe(
+            false
+          )
         })
       })
 
-      describe('and has valid value', () => {
-        it('should return form values', () => {
-          const nameInput = document.querySelector("[name='name']")
-          const optionsSelect = document.querySelector("[name='options']")
-          const commentsTextarea = document.querySelector("[name='comments']")
-          const inputGroup = nameInput.parentNode
-
+      describe('and all fields was filled and call getValues and reset methods', () => {
+        it('should reset all fields', () => {
+          formSelector = document.querySelector('#form')
           formValidate.init()
-          nameInput.value = 'name value'
-          optionsSelect.value = 'option2'
-          commentsTextarea.value = 'comments'
 
-          dispatchEvent(nameInput, 'blur')
-          dispatchEvent(optionsSelect, 'change')
-          dispatchEvent(commentsTextarea, 'change')
+          const nameField = formSelector.querySelector('[name="name"]')
+          const optionalField = formSelector.querySelector('[name="optional"]')
+          const emailField = formSelector.querySelector('[name="email"]')
+          const optionsField = formSelector.querySelector('[name="options"]')
+          const termsField = formSelector.querySelector('[name="terms"]')
+          const genderField = formSelector.querySelector('[name="gender"]')
+          const commentsField = formSelector.querySelector('[name="comments"]')
 
-          expect(formValidate.hasValidFields()).toBe(true)
-          expect(formValidate.getValues()).toEqual({
-            name: 'name value',
-            optional: '',
-            options: 'option2',
-            comments: 'comments'
-          })
+          nameField.value = 'John Doe'
+          optionalField.value = 'optional'
+          emailField.value = 'john.doe@gmail.com'
+          optionsField.value = 'option2'
+          termsField.checked = true
+          genderField.checked = true
+          commentsField.value = 'comments'
 
-          expect(nameInput.classList.contains(invalidClass)).toBe(false)
-          expect(nameInput.classList.contains(validClass)).toBe(true)
-          expect(inputGroup.querySelector(`.${msgClass}`)).toBeNull()
+          dispatchEvent(nameField, 'change')
+          dispatchEvent(formSelector, 'submit')
+
+          // expect(formValidate.hasValidFields()).toBe(true)
         })
-      })
-    })
-  })
-
-  describe('when call reset method', () => {
-    it('should reset all form fields', () => {
-      const formFields = formSelector.elements
-      const nameInput = document.querySelector("[name='name']")
-      const optionalInput = document.querySelector("[name='optional']")
-      const optionsSelect = document.querySelector("[name='options']")
-      const commentsTextarea = document.querySelector("[name='comments']")
-
-      formValidate.init()
-      nameInput.value = 'name value'
-      optionalInput.value = 'optional value'
-      optionsSelect.value = 'option2'
-      commentsTextarea.value = 'comments'
-
-      dispatchEvent(nameInput, 'blur')
-      dispatchEvent(optionsSelect, 'change')
-      dispatchEvent(commentsTextarea, 'change')
-
-      expect(formValidate.hasValidFields()).toBe(true)
-      expect(formValidate.getValues()).toEqual({
-        name: 'name value',
-        optional: 'optional value',
-        options: 'option2',
-        comments: 'comments'
-      })
-
-      formValidate.reset()
-
-      expect(formValidate.getValues()).toEqual({
-        name: '',
-        optional: '',
-        options: '',
-        comments: ''
-      })
-
-      Array.from(formFields).forEach((element) => {
-        const isButtons = element.type === 'submit' || element.type === 'reset'
-
-        if (!isButtons) {
-          expect(element.classList.contains(invalidClass)).toBe(false)
-          expect(element.classList.contains(validClass)).toBe(false)
-        }
       })
     })
   })

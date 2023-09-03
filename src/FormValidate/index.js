@@ -17,10 +17,6 @@ class FormValidate {
     this._msgClass = msgClass
   }
 
-  cpfIsValid() {}
-
-  trigger() {}
-
   submit(event) {
     event.preventDefault()
 
@@ -28,23 +24,43 @@ class FormValidate {
       return true
     }
 
-    const requiredFields = this._form.querySelectorAll(
+    const requiredFormFields = this._form.querySelectorAll(
       `[data-required]:not(.${this._validClass})`
     )
 
-    requiredFields.forEach((requiredField) => {
-      this.addError(requiredField)
+    requiredFormFields.forEach((requiredField) => {
+      const formGroup = requiredField.closest(`.${this._inputGroupClass}`)
+      this.addError(formGroup)
     })
 
-    requiredFields[0].focus()
+    requiredFormFields?.[0]?.focus()
 
     return false
   }
 
-  getValues() {
-    const $formElements = this._form.elements
+  hasValidFields() {
+    const requiredFields = this._form.querySelectorAll('[data-required]')
 
-    return Array.from($formElements).reduce((acc, element) => {
+    if (!requiredFields.length) {
+      return true
+    }
+
+    const formGroups = Array.from(requiredFields).filter((field) => {
+      return field.closest(`.${this._inputGroupClass}`)
+    })
+
+    const validFormGroups = Array.from(requiredFields).filter((field) => {
+      const formGroup = field.closest(`.${this._inputGroupClass}`)
+      return formGroup.classList.contains(this._validClass)
+    })
+
+    return formGroups?.length === validFormGroups?.length
+  }
+
+  getValues() {
+    const formFields = this._form.elements
+
+    return Array.from(formFields).reduce((acc, element) => {
       const isButtons = element.type === 'submit' || element.type === 'reset'
 
       if (!isButtons) {
@@ -56,9 +72,20 @@ class FormValidate {
   }
 
   reset() {
-    const $formElements = this._form.elements
+    const formFieldsWithInvalidClass = this._form.querySelectorAll(
+      `.${this._invalidClass}`
+    )
 
-    Array.from($formElements).forEach((element) => {
+    const formFieldsWithValidClass = this._form.querySelectorAll(
+      `.${this._validClass}`
+    )
+
+    Array.from(formFieldsWithInvalidClass).forEach((element) => {
+      element.classList.remove(this._invalidClass)
+      element.classList.remove(this._validClass)
+    })
+
+    Array.from(formFieldsWithValidClass).forEach((element) => {
       element.classList.remove(this._invalidClass)
       element.classList.remove(this._validClass)
     })
@@ -67,15 +94,19 @@ class FormValidate {
   }
 
   init() {
-    const $inputs = this._form.querySelectorAll('[data-required]')
+    const formFields = this._form.querySelectorAll('[data-required]')
 
     this._form.setAttribute('novalidate', '')
 
-    $inputs.forEach(($input) => {
-      $input.addEventListener('keyup', (event) => this.validation(event))
-      $input.addEventListener('input', (event) => this.validation(event))
-      $input.addEventListener('change', (event) => this.validation(event))
-      $input.addEventListener('blur', (event) => this.validation(event))
+    formFields.forEach((field) => {
+      field.addEventListener('keyup', (event) => this.validation(event))
+      field.addEventListener('input', (event) => this.validation(event))
+      field.addEventListener('change', (event) => this.validation(event))
+      field.addEventListener('blur', (event) => this.validation(event))
+
+      if (field.value.trim().length) {
+        this.validation({ target: field })
+      }
     })
 
     this._form.addEventListener('submit', (event) => {
@@ -84,47 +115,37 @@ class FormValidate {
   }
 
   validation(event) {
-    const $formElement = event.target
+    const field = event.target
+    const formGroup = field.closest(`.${this._inputGroupClass}`)
 
-    !$formElement.value.length
-      ? this.addError($formElement)
-      : this.addSuccess($formElement)
+    !field.value ? this.addError(formGroup) : this.addSuccess(formGroup)
 
     return this.hasValidFields()
   }
 
-  addError(element) {
-    const parent = element.closest(`.${this._inputGroupClass}`)
+  addError(formGroup) {
     const errorMessage = document.createElement('span')
-    const isErrorMessage = parent.querySelector(`.${this._msgClass}`)
+    const field = formGroup.querySelector('[data-required]')
+    const isErrorMessage = formGroup.querySelector(`.${this._msgClass}`)
 
-    element.classList.remove(this._validClass)
-    element.classList.add(this._invalidClass)
+    formGroup.classList.remove(this._validClass)
+    formGroup.classList.add(this._invalidClass)
+
     errorMessage.classList.add(this._msgClass)
     errorMessage.innerHTML =
-      element.getAttribute('data-validate-msg') || 'Required field'
+      field.getAttribute('data-validate-msg') || 'Required field'
 
     if (!isErrorMessage) {
-      parent.appendChild(errorMessage)
+      formGroup.appendChild(errorMessage)
     }
   }
 
-  addSuccess(element) {
-    const parent = element.parentNode
-    const errorMessage = parent.querySelector(`.${this._msgClass}`)
+  addSuccess(formGroup) {
+    const errorMessage = formGroup.querySelector(`.${this._msgClass}`)
 
-    element.classList.remove(this._invalidClass)
-    element.classList.add(this._validClass)
+    formGroup.classList.remove(this._invalidClass)
+    formGroup.classList.add(this._validClass)
     errorMessage?.remove()
-  }
-
-  hasValidFields() {
-    const $inputs = this._form.querySelectorAll('[data-required]')
-    const $validInputs = this._form.querySelectorAll(
-      `[data-required].${this._validClass}`
-    )
-
-    return $inputs?.length === $validInputs?.length
   }
 }
 

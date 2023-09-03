@@ -8,6 +8,39 @@
     <style>
       * {
         outline: none;
+        box-sizing: border-box;
+        font-family: sans-serif;
+      }
+
+      body {
+        font-size: 100%;
+      }
+
+      form {
+        max-width: 300px;
+        margin: 0 auto;
+      }
+
+      label, .label {
+        font-size: 0.75rem;
+        font-weight: bold;
+        margin-bottom: 0.2rem;
+      }
+
+      input:not([type="checkbox"]):not([type="radio"]),
+      select,
+      textarea,
+      button {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 0.25rem;
+        font-size: 0.85rem;
+        display: block;
+      }
+
+      button {
+        margin-bottom: 0.5rem;
       }
 
       .form-group {
@@ -20,16 +53,32 @@
       }
 
       .error-msg-field {
-        font-size: 0.85rem;
+        font-size: 0.75rem;
         color: red;
+        display: block;
+        margin-top: 0.25rem;
       }
 
-      .valid-field {
-        border: 2px solid green;
+      .valid-field input:not([type="checkbox"]):not([type="radio"]),
+      .valid-field textarea,
+      .valid-field select {
+        border-color: green;
+        box-shadow: 0 0 0 1px green;
       }
 
-      .invalid-field {
-        border: 2px solid red;
+      .valid-field ::placeholder {
+        color: green;
+      }
+
+      .invalid-field input:not([type="checkbox"]):not([type="radio"]),
+      .invalid-field textarea,
+      .invalid-field select {
+        border-color: red;
+        box-shadow: 0 0 0 1px red;
+      }
+
+      .invalid-field ::placeholder {
+        color: red;
       }
     </style>
   </head>
@@ -38,7 +87,12 @@
     <form id="form">
       <div class="form-group">
         <label for="">Name</label>
-        <input type="text" name="name" placeholder="Name" data-required />
+        <input type="text" name="name" placeholder="Name" data-required value="dsdsa" />
+      </div>
+
+      <div class="form-group">
+        <label for="">Optional</label>
+        <input type="text" name="optional" placeholder="optional" />
       </div>
 
       <div class="form-group">
@@ -53,6 +107,23 @@
           <option value="option1">Option 1</option>
           <option value="option2">Option 2</option>
         </select>
+      </div>
+
+      <div class="form-group">
+        <label for="">Accept termos</label>
+        <input type="checkbox" name="terms" value="true" data-required /> yes
+      </div>
+
+      <div class="form-group">
+        <div class="label">Gender</div>
+
+        <label>
+          <input type="radio" name="gender" value="male" data-required /> Male
+        </label>
+
+        <label>
+          <input type="radio" name="gender" value="female" data-required /> Female
+        </label>
       </div>
 
       <div class="form-group">
