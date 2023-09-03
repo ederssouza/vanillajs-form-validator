@@ -1,22 +1,12 @@
-import { basicForm, fullForm } from '../utils/tests/mocks'
+import {
+  basicForm,
+  formWithFieldsFilled,
+  formWithMultipleFields
+} from '../utils/tests/mocks'
 import FormValidate from './index'
 
 function dispatchEvent(element, eventName) {
   const event = new window.Event(eventName, { bubbles: true })
-  element.dispatchEvent(event)
-}
-
-function dispatchMouseEvent(
-  element,
-  eventType,
-  canBubble = true,
-  cancelable = true
-) {
-  const event = new KeyboardEvent(eventType, {
-    view: window,
-    bubbles: canBubble,
-    cancelable: cancelable
-  })
   element.dispatchEvent(event)
 }
 
@@ -67,7 +57,7 @@ describe('FormValidate', () => {
 
     describe('and form have the required fields', () => {
       beforeEach(() => {
-        document.body.innerHTML = fullForm()
+        document.body.innerHTML = formWithMultipleFields()
         formSelector = document.querySelector('#form')
         formValidate = FormValidate({ formSelector, ...defaultValues })
       })
@@ -216,7 +206,88 @@ describe('FormValidate', () => {
           dispatchEvent(nameField, 'change')
           dispatchEvent(formSelector, 'submit')
 
-          // expect(formValidate.hasValidFields()).toBe(true)
+          expect(formValidate.hasValidFields()).toBe(true)
+          expect(formValidate.getValues()).toEqual({
+            comments: 'comments',
+            email: 'john.doe@gmail.com',
+            gender: 'female',
+            name: 'John Doe',
+            optional: 'optional',
+            options: 'option2',
+            terms: 'true'
+          })
+
+          formValidate.reset()
+
+          expect(formValidate.getValues()).toEqual({
+            comments: '',
+            email: '',
+            gender: 'female',
+            name: '',
+            optional: '',
+            options: '',
+            terms: 'true'
+          })
+        })
+      })
+
+      describe('and some fields was filled and call getValues and reset methods', () => {
+        beforeEach(() => {
+          document.body.innerHTML = formWithFieldsFilled()
+          formSelector = document.querySelector('#form')
+          formValidate = FormValidate({ formSelector, ...defaultValues })
+        })
+
+        afterEach(() => {
+          document.body.innerHTML = ''
+          formValidate = undefined
+        })
+
+        it('should reset all fields', () => {
+          formSelector = document.querySelector('#form')
+          formValidate.init()
+
+          const nameField = formSelector.querySelector('[name="name"]')
+          const optionalField = formSelector.querySelector('[name="optional"]')
+          const emailField = formSelector.querySelector('[name="email"]')
+          const optionsField = formSelector.querySelector('[name="options"]')
+          const termsField = formSelector.querySelector('[name="terms"]')
+          const genderField = formSelector.querySelector('[name="gender"]')
+          const commentsField = formSelector.querySelector('[name="comments"]')
+
+          nameField.value = 'John Doe'
+          optionalField.value = 'optional'
+          emailField.value = 'john.doe@gmail.com'
+          optionsField.value = 'option2'
+          termsField.checked = true
+          genderField.checked = true
+          commentsField.value = 'comments'
+
+          dispatchEvent(nameField, 'change')
+          dispatchEvent(formSelector, 'submit')
+
+          expect(formValidate.hasValidFields()).toBe(true)
+          expect(formValidate.getValues()).toEqual({
+            comments: 'comments',
+            email: 'john.doe@gmail.com',
+            gender: 'female',
+            name: 'John Doe',
+            optional: 'optional',
+            options: 'option2',
+            terms: 'true'
+          })
+
+          formValidate.reset()
+
+          expect(formValidate.getValues()).toEqual({
+            comments: '',
+            email: 'john.doe@gmail.com',
+            gender: 'female',
+            name: '',
+            optional: '',
+            options: '',
+            terms: 'true'
+          })
         })
       })
     })

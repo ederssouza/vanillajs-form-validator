@@ -73,18 +73,9 @@ class FormValidate {
   }
 
   reset() {
-    const formFieldsWithInvalidClass = this._form.querySelectorAll(
-      `.${this._invalidClass}`
-    )
-
     const formFieldsWithValidClass = this._form.querySelectorAll(
       `.${this._validClass}`
     )
-
-    Array.from(formFieldsWithInvalidClass).forEach((element) => {
-      element.classList.remove(this._invalidClass)
-      element.classList.remove(this._validClass)
-    })
 
     Array.from(formFieldsWithValidClass).forEach((element) => {
       element.classList.remove(this._invalidClass)
@@ -105,7 +96,7 @@ class FormValidate {
       field.addEventListener('change', (event) => this.validation(event))
       field.addEventListener('blur', (event) => this.validation(event))
 
-      if (field.type === 'radio' || field.type === 'checkbox') {
+      if (this.isCheckboxOrRadio(field)) {
         if (field.checked) {
           this.validation({ target: field })
         }
@@ -126,7 +117,7 @@ class FormValidate {
     const field = event.target
     const formGroup = field.closest(`.${this._inputGroupClass}`)
 
-    if (field.type === 'checkbox' || field.type === 'radio') {
+    if (this.isCheckboxOrRadio(field)) {
       field.checked ? this.addSuccess(formGroup) : this.addError(formGroup)
     } else {
       !field.value.trim()
@@ -135,6 +126,10 @@ class FormValidate {
     }
 
     return this.hasValidFields()
+  }
+
+  isCheckboxOrRadio(field) {
+    return field.type === 'checkbox' || field.type === 'radio'
   }
 
   addError(formGroup) {
